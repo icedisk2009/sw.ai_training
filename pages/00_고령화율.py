@@ -64,7 +64,7 @@ st.write(f"**전국 고령 인구 비율:** {elderly_ratio:.2f}%")
 st.text("\n\n")
 
 # 고령화 비율 상위 지역 필터링
-st.subheader("🏆 고령화 비율 상위 지역")
+st.subheader("👵👴 고령화 비율 상위 지역")
 top_elderly_regions = df.nlargest(5, "고령인구비율 (%)")[["행정구역별", "고령인구비율 (%)"]]
 st.table(top_elderly_regions)
 
