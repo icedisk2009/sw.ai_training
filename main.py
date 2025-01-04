@@ -7,8 +7,9 @@ import seaborn as sns
 df = pd.read_csv('total_fertility.csv')
 
 st.title("대한민국 합계 출산율 분석")
+st.text("\n\n")
 st.write("한국의 출산율은 경제협력개발기구(OECD) 회원국 중 압도적으로 꼴찌다. 지난 2013년부터 11년째 최하위를 기록 중이며, OECD 평균(1.58명)의 절반에도 미치지 못한다.")
-
+st.text("\n\n")
 # 사이드바에 시각화 옵션 추가
 visualization_option = st.sidebar.selectbox(
     "시각화 선택",
