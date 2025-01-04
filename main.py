@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import koreanize_matplotlib
 
 # 데이터 로드
 df = pd.read_csv('total_fertility.csv')
