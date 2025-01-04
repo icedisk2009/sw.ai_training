@@ -1,55 +1,89 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-import numpy as np
+import seaborn as sns
+
+# 데이터 로드
+df = pd.read_csv('total_fertility.csv')
 
 st.title("대한민국 합계 출산율 분석")
 st.write("한국의 출산율은 경제협력개발기구(OECD) 회원국 중 압도적으로 꼴찌다. 지난 2013년부터 11년째 최하위를 기록 중이며, OECD 평균(1.58명)의 절반에도 미치지 못한다.")
 
+# 사이드바에 시각화 옵션 추가
+visualization_option = st.sidebar.selectbox(
+    "시각화 선택",
+    ["선 그래프", "막대 그래프", "산점도", "데이터 테이블"]
+)
 
-years = list(range(2015, 2025))
-regions = ["서울", "경기", "인천", "부산", "대구"]
-data = {
-    "년도": np.repeat(years, len(regions)),
-    "지역": regions * len(years),
-    "PM10 평균 농도 (µg/m³)": np.random.randint(20, 100, size=len(years) * len(regions)),
-}
+# 연도 범위 선택
+year_range = st.sidebar.slider(
+    "연도 범위 선택",
+    min_value=int(df['연도'].min()),
+    max_value=int(df['연도'].max()),
+    value=(1970, 2023)
+)
 
-df = pd.DataFrame(data)
+# 데이터 필터링
+filtered_df = df[(df['연도'] >= year_range[0]) & (df['연도'] <= year_range[1])]
 
-# 데이터 표시
-st.subheader("데이터 미리보기")
-st.write(df.head())
+if visualization_option == "선 그래프":
+    st.subheader("연도별 합계출산율 추이")
+    fig, ax = plt.subplots(figsize=(12, 6))
+    ax.plot(filtered_df['연도'], filtered_df['합계출산율(명)'], marker='o')
+    ax.set_xlabel('연도')
+    ax.set_ylabel('합계출산율(명)')
+    ax.grid(True)
+    plt.xticks(rotation=45)
+    st.pyplot(fig)
 
-# 지역별 PM10 평균 농도 변화 시각화
-st.subheader("지역별 PM10 평균 농도 변화")
-selected_region = st.selectbox("지역 선택", regions)
-filtered_data = df[df["지역"] == selected_region]
+elif visualization_option == "막대 그래프":
+    st.subheader("연도별 출생아 수")
+    fig, ax = plt.subplots(figsize=(12, 6))
+    ax.bar(filtered_df['연도'], filtered_df['출생아수(명)'])
+    ax.set_xlabel('연도')
+    ax.set_ylabel('출생아 수(명)')
+    plt.xticks(rotation=45)
+    st.pyplot(fig)
 
-fig, ax = plt.subplots()
-ax.plot(filtered_data["년도"], filtered_data["PM10 평균 농도 (µg/m³)"], marker="o")
-ax.set_title(f"{selected_region}의 PM10 평균 농도 변화")
-ax.set_xlabel("년도")
-ax.set_ylabel("PM10 평균 농도 (µg/m³)")
-st.pyplot(fig)
+elif visualization_option == "산점도":
+    st.subheader("출생아 수와 합계출산율의 관계")
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.scatter(filtered_df['출생아수(명)'], filtered_df['합계출산율(명)'])
+    ax.set_xlabel('출생아 수(명)')
+    ax.set_ylabel('합계출산율(명)')
+    st.pyplot(fig)
 
-# 전국 평균 PM10 농도 변화 시각화
-st.subheader("전국 평균 PM10 농도 변화")
-national_avg = df.groupby("년도")["PM10 평균 농도 (µg/m³)"].mean()
+else:
+    st.subheader("원본 데이터")
+    st.dataframe(filtered_df)
 
-fig2, ax2 = plt.subplots()
-ax2.plot(national_avg.index, national_avg.values, marker="o", color="orange")
-ax2.set_title("전국 PM10 평균 농도 변화")
-ax2.set_xlabel("년도")
-ax2.set_ylabel("PM10 평균 농도 (µg/m³)")
-st.pyplot(fig2)
+# 주요 통계 표시
+st.subheader("주요 통계")
+col1, col2, col3 = st.columns(3)
 
-# 데이터 다운로드 기능 추가
-st.subheader("데이터 다운로드")
-csv = df.to_csv(index=False).encode('utf-8')
+with col1:
+    st.metric(
+        "현재 합계출산율",
+        f"{filtered_df['합계출산율(명)'].iloc[-1]:.3f}명"
+    )
+
+with col2:
+    st.metric(
+        "최고 합계출산율",
+        f"{filtered_df['합계출산율(명)'].max():.3f}명"
+    )
+
+with col3:
+    st.metric(
+        "최저 합계출산율",
+        f"{filtered_df['합계출산율(명)'].min():.3f}명"
+    )
+
+# 데이터 다운로드 버튼
+csv = filtered_df.to_csv(index=False).encode('utf-8')
 st.download_button(
     label="CSV 파일 다운로드",
     data=csv,
-    file_name="미세먼지_데이터.csv",
-    mime="text/csv",
+    file_name="출산율_데이터.csv",
+    mime="text/csv"
 )
