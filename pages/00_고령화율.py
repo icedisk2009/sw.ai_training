@@ -2,6 +2,12 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+from matplotlib import font_manager, rc
+
+# 한글 폰트 설정 (Malgun Gothic 사용)
+font_path = "C:/Windows/Fonts/malgun.ttf"  # Windows 환경
+font_name = font_manager.FontProperties(fname=font_path).get_name()
+rc('font', family=font_name)
 
 # 데이터 불러오기
 data = {
@@ -33,7 +39,7 @@ data = {
 df = pd.DataFrame(data)
 
 # Streamlit 앱 구성
-st.title('🚀 한국 사회: 실버 SHOCK에 대비하라! 🚀')
+st.title('🚀 한국 사회: 실버 ATTACK에 대비하라! 🚀')
 st.write(
     """
     한국은 빠르게 다가오는 고령화 시대의 한가운데에 있습니다.
