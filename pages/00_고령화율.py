@@ -43,13 +43,13 @@ st.write(
 )
 
 # 여백 추가를 위해 빈 줄 삽입
-st.text("\n")
+st.text("\n\n")
 
 st.subheader("📊 행정구역별 고령화 데이터")
 st.dataframe(df)
 
 # 여백 추가
-st.text("\n")
+st.text("\n\n")
 
 st.subheader("🔍 주요 통계")
 total_population = df["전체인구 (명)"].sum()
@@ -61,7 +61,7 @@ st.write(f"**전국 고령 인구:** {elderly_population:,}명")
 st.write(f"**전국 고령 인구 비율:** {elderly_ratio:.2f}%")
 
 # 여백 추가
-st.text("\n")
+st.text("\n\n")
 
 # 고령화 비율 상위 지역 필터링
 st.subheader("🏆 고령화 비율 상위 지역")
@@ -69,7 +69,7 @@ top_elderly_regions = df.nlargest(5, "고령인구비율 (%)")[["행정구역별
 st.table(top_elderly_regions)
 
 # 여백 추가
-st.text("\n")
+st.text("\n\n")
 
 # 사용자 입력: 특정 지역 검색
 st.subheader("🔎 특정 지역 정보 검색")
@@ -81,7 +81,7 @@ if not region_data.empty:
     st.write(region_data)
 
 # 여백 추가
-st.text("\n")
+st.text("\n\n")
 
 # 막대그래프 시각화 (Seaborn으로 색상 개선)
 st.subheader("📊 행정구역별 고령화 비율 비교")
